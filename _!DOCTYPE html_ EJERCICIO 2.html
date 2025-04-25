@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>¡Aprende Jugando con el Abecedario de Animales!</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background-color: #4facfe;
+      padding: 20px;
+      color: white;
+      font-size: 2em;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin: 30px auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 500px;
+    }
+    .instruction {
+      font-size: 1.1em;
+      margin: 10px auto;
+      padding: 10px;
+      background-color: #e3f2fd;
+      border-radius: 10px;
+      max-width: 600px;
+    }
+    .question {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+    }
+    button {
+      background-color: #6a82fb;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    button:hover {
+      background-color: #5a72e8;
+    }
+    .score {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    .animal-image {
+      width: 150px;
+      margin: 20px auto;
+      border-radius: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>🐾 ¡Aprende Jugando con el Abecedario de Animales! 🐾</header>
+  <div class="instruction">
+    👋 ¡Hola amiguito! Aquí aprenderás las letras del abecedario con la ayuda de tus animales favoritos. Mira la imagen y lee la pregunta. Luego presiona si crees que es correcto o incorrecto. ¡Ganas 2 puntos por cada respuesta correcta! 🐶🐱
+  </div>
+  <div class="card">
+    <div class="question" id="questionText">Cargando pregunta...</div>
+    <img id="animalImage" class="animal-image" src="" alt="Animal" style="display:none;" />
+    <div>
+      <button onclick="checkAnswer(true)">✅ Correcto</button>
+      <button onclick="checkAnswer(false)">❌ Incorrecto</button>
+    </div>
+    <div class="score">Puntos: <span id="score">0</span></div>
+    <button onclick="nextQuestion()">Siguiente Pregunta</button>
+  </div>
+
+  <script>
+    const abecedario = [
+  { letra: 'B', animal: 'Beagle', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Beagle_600.jpg/320px-Beagle_600.jpg' },
+  { letra: 'C', animal: 'Chihuahua', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Chihuahua1_bvdb.jpg/320px-Chihuahua1_bvdb.jpg' },
+  { letra: 'D', animal: 'Dálmata', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Dalmatiner_August_2007.JPG/320px-Dalmatiner_August_2007.JPG' },
+  { letra: 'G', animal: 'Golden Retriever', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Golden_retriever_eating_pigs_foot.jpg/320px-Golden_retriever_eating_pigs_foot.jpg' },
+  { letra: 'L', animal: 'Labrador', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Labrador_Retriever_with_ball.jpg/320px-Labrador_Retriever_with_ball.jpg' },
+  { letra: 'P', animal: 'Poodle', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Poodle_600.jpg/320px-Poodle_600.jpg' },
+  { letra: 'S', animal: 'Shih Tzu', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Shih-Tzu.jpg/320px-Shih-Tzu.jpg' },
+  { letra: 'Y', animal: 'Yorkshire Terrier', imagen: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Yorkshire_Terrier_(Biewer).jpg/320px-Yorkshire_Terrier_(Biewer).jpg' }
+];
+
+    let score = 0;
+    let currentQuestion = null;
+
+    function getRandomQuestion() {
+      const index = Math.floor(Math.random() * abecedario.length);
+      const item = abecedario[index];
+
+      // Elegimos aleatoriamente si se mostrará la respuesta correcta o no
+      const isCorrect = Math.random() > 0.5;
+      let shownAnimal = item.animal;
+      let shownImage = item.imagen;
+
+      if (!isCorrect) {
+        let wrongItem;
+        do {
+          wrongItem = abecedario[Math.floor(Math.random() * abecedario.length)];
+        } while (wrongItem.letra === item.letra);
+
+        shownAnimal = wrongItem.animal;
+        shownImage = wrongItem.imagen;
+      }
+
+      return {
+        letra: item.letra,
+        animal: shownAnimal,
+        imagen: shownImage,
+        correct: isCorrect
+      };
+    }
+
+    function nextQuestion() {
+      currentQuestion = getRandomQuestion();
+      document.getElementById("questionText").innerText = `¿La letra "${currentQuestion.letra}" es de "${currentQuestion.animal}"?`;
+      const image = document.getElementById("animalImage");
+      image.src = currentQuestion.imagen;
+      image.style.display = "block";
+    }
+
+    function checkAnswer(userAnswer) {
+      if (userAnswer === currentQuestion.correct) {
+        score += 2;
+        alert("¡Muy bien! ¡Lo hiciste excelente! 🎉");
+      } else {
+        alert("Uy, no fue correcto esta vez... ¡Sigue intentando, tú puedes! 💪🐾");
+      }
+      document.getElementById("score").innerText = score;
+    }
+
+    nextQuestion();
+  </script>
+</body>
+</html>
